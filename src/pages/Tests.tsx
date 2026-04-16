@@ -89,10 +89,6 @@ const Tests: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTest, setEditingTest] = useState<Test | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
   // Pré-remplir le formulaire avec les valeurs de la session sélectionnée
   useEffect(() => {
     if (selectedSession) {
@@ -107,7 +103,11 @@ const Tests: React.FC = () => {
     }
   }, [selectedSession, sessions]);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
     try {
       const [testsData, appsData] = await Promise.all([
         testsAPI.getAll(),
@@ -120,9 +120,9 @@ const Tests: React.FC = () => {
       console.error(err);
       setMessage({ type: 'error', text: 'Erreur de chargement' });
     }
-  };
+  }
 
-  const fetchSessions = async () => {
+  async function fetchSessions() {
     try {
       const response = await fetch('http://localhost:8000/test-sessions', {
         headers: {
