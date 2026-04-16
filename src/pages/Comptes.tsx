@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { comptesAPI, applicationsAPI } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +19,6 @@ interface Compte {
 }
 
 const Comptes: React.FC = () => {
-  const navigate = useNavigate();
   const [comptes, setComptes] = useState<Compte[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,12 +55,6 @@ const Comptes: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('token_type');
-    navigate('/login');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
