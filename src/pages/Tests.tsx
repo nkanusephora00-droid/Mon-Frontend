@@ -91,7 +91,7 @@ const Tests: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   // Pré-remplir le formulaire avec les valeurs de la session sélectionnée
   useEffect(() => {
@@ -109,13 +109,13 @@ const Tests: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const [testsData, sessionsData, appsData] = await Promise.all([
+      const [testsData, appsData] = await Promise.all([
         testsAPI.getAll(),
-        fetchSessions(),
         applicationsAPI.getAll()
       ]);
       setTests(testsData);
       setApplications(appsData);
+      await fetchSessions();
     } catch (err) {
       console.error(err);
       setMessage({ type: 'error', text: 'Erreur de chargement' });

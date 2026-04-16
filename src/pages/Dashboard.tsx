@@ -9,12 +9,6 @@ interface User {
   role: string;
 }
 
-interface TestSession {
-  id: number;
-  statut: string;
-  dateTest?: string;
-}
-
 interface Test {
   id: number;
   statut: string;
