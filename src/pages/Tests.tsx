@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { testsAPI, applicationsAPI } from '../services/api';
+import { testsAPI, applicationsAPI, api, testSessionsAPI } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEye, faFilePdf, faCheck, faTimes, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 
@@ -125,15 +125,8 @@ const Tests: React.FC = () => {
 
   async function fetchSessions() {
     try {
-      const response = await fetch('http://localhost:8000/test-sessions', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setSessions(data);
-      }
+      const response = await api.get('/test-sessions');
+      setSessions(response.data);
     } catch (err) {
       console.error('Error fetching sessions:', err);
     }
@@ -142,21 +135,11 @@ const Tests: React.FC = () => {
   const handleCreateSession = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:8000/test-sessions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(sessionForm)
-      });
-      if (response.ok) {
-        setMessage({ type: 'success', text: 'Session créée avec succès!' });
-        setShowSessionModal(false);
-        setSessionForm({ nom: '', description: '', nom_document: '', applicationId: 0, statut: 'En cours' });
-        fetchSessions();
-      }
+      await testSessionsAPI.create(sessionForm);
+      setMessage({ type: 'success', text: 'Session créée avec succès!' });
+      setShowSessionModal(false);
+      setSessionForm({ nom: '', description: '', nom_document: '', applicationId: 0, statut: 'En cours' });
+      fetchSessions();
     } catch (err) {
       setMessage({ type: 'error', text: 'Erreur lors de la création' });
     }
@@ -165,18 +148,12 @@ const Tests: React.FC = () => {
   const handleDeleteSession = async (id: number) => {
     if (!window.confirm('Voulez-vous vraiment supprimer cette session et tous ses tests?')) return;
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:8000/test-sessions/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        setMessage({ type: 'success', text: 'Session supprimée!' });
-        fetchSessions();
-        if (selectedSession === id) {
-          setSelectedSession(null);
-          setView('sessions');
-        }
+      await testSessionsAPI.delete(id);
+      setMessage({ type: 'success', text: 'Session supprimée!' });
+      fetchSessions();
+      if (selectedSession === id) {
+        setSelectedSession(null);
+        setView('sessions');
       }
     } catch (err) {
       setMessage({ type: 'error', text: 'Erreur lors de la suppression' });
@@ -185,29 +162,20 @@ const Tests: React.FC = () => {
 
   const handleUpdateSessionStatus = async (id: number, newStatut: string) => {
     try {
-      const token = localStorage.getItem('access_token');
       const session = sessions.find(s => s.id === id);
       if (!session) return;
       
-      const response = await fetch(`http://localhost:8000/test-sessions/${id}`, {
-        method: 'PUT',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          nom: session.nom,
-          description: session.description,
-          applicationId: session.applicationId,
-          environnement: session.environnement,
-          version: session.version,
-          nom_document: session.nom_document,
-          statut: newStatut
-        })
+      await testSessionsAPI.update(id, {
+        nom: session.nom,
+        description: session.description,
+        applicationId: session.applicationId,
+        environnement: session.environnement,
+        version: session.version,
+        nom_document: session.nom_document,
+        statut: newStatut
       });
-      if (response.ok) {
-        setMessage({ type: 'success', text: 'Statut mis à jour!' });
-        fetchSessions();
+      setMessage({ type: 'success', text: 'Statut mis à jour!' });
+      fetchSessions();
       }
     } catch (err) {
       setMessage({ type: 'error', text: 'Erreur lors de la mise à jour du statut' });
