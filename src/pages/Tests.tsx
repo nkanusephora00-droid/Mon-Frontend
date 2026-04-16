@@ -135,13 +135,27 @@ const Tests: React.FC = () => {
   const handleCreateSession = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await testSessionsAPI.create(sessionForm);
+      const sessionData = {
+        nom: sessionForm.nom,
+        description: sessionForm.description,
+        applicationId: sessionForm.applicationId || undefined,
+        nom_document: sessionForm.nom_document || undefined,
+        statut: sessionForm.statut
+      };
+      await testSessionsAPI.create(sessionData);
       setMessage({ type: 'success', text: 'Session créée avec succès!' });
       setShowSessionModal(false);
       setSessionForm({ nom: '', description: '', nom_document: '', applicationId: 0, statut: 'En cours' });
       fetchSessions();
-    } catch (err) {
-      setMessage({ type: 'error', text: 'Erreur lors de la création' });
+    } catch (err: any) {
+      const detail = err.response?.data?.detail;
+      let errorText = 'Erreur lors de la création';
+      if (typeof detail === 'string') {
+        errorText = detail;
+      } else if (Array.isArray(detail)) {
+        errorText = detail.map((e: any) => e.msg || JSON.stringify(e)).join(', ');
+      }
+      setMessage({ type: 'error', text: errorText });
     }
   };
 
@@ -176,9 +190,11 @@ const Tests: React.FC = () => {
       });
       setMessage({ type: 'success', text: 'Statut mis à jour!' });
       fetchSessions();
-      }
-    } catch (err) {
-      setMessage({ type: 'error', text: 'Erreur lors de la mise à jour du statut' });
+    } catch (err: any) {
+      const detail = err.response?.data?.detail;
+      let errorText = 'Erreur lors de la mise à jour';
+      if (typeof detail === 'string') errorText = detail;
+      setMessage({ type: 'error', text: errorText });
     }
   };
 

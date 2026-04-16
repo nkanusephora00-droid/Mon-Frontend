@@ -185,6 +185,7 @@ export const testsAPI = {
     resultatObtenu?: string;
     statut: string;
     commentaires?: string;
+    image?: string;
   }) => {
     const response = await api.post("/tests", data);
     return response.data;
@@ -192,7 +193,8 @@ export const testsAPI = {
   update: async (
     id: number,
     data: {
-      applicationId: number;
+      sessionId?: number;
+      applicationId?: number;
       applicationNom?: string;
       version?: string;
       environnement?: string;
@@ -203,6 +205,7 @@ export const testsAPI = {
       resultatObtenu?: string;
       statut: string;
       commentaires?: string;
+      image?: string;
     },
   ) => {
     const response = await api.put(`/tests/${id}`, data);
@@ -221,11 +224,12 @@ export const testSessionsAPI = {
     return response.data;
   },
   create: async (data: {
-    applicationId: number;
-    applicationNom: string;
-    dateTest?: string;
+    nom: string;
+    description?: string;
+    applicationId?: number;
+    nom_document?: string;
     environnement?: string;
-    superviseur?: string;
+    version?: string;
     statut?: string;
   }) => {
     const response = await api.post("/test-sessions", data);
@@ -234,11 +238,12 @@ export const testSessionsAPI = {
   update: async (
     id: number,
     data: {
-      applicationId: number;
-      applicationNom?: string;
-      dateTest?: string;
+      nom: string;
+      description?: string;
+      applicationId?: number;
+      nom_document?: string;
       environnement?: string;
-      superviseur?: string;
+      version?: string;
       statut?: string;
     },
   ) => {
