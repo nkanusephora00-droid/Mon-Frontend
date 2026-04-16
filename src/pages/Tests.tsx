@@ -104,22 +104,24 @@ const Tests: React.FC = () => {
   }, [selectedSession, sessions]);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const [testsData, appsData] = await Promise.all([
-          testsAPI.getAll(),
-          applicationsAPI.getAll()
-        ]);
-        setTests(testsData);
-        setApplications(appsData);
-        await fetchSessions();
-      } catch (err) {
-        console.error(err);
-        setMessage({ type: 'error', text: 'Erreur de chargement' });
-      }
-    })();
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function fetchData() {
+    try {
+      const [testsData, appsData] = await Promise.all([
+        testsAPI.getAll(),
+        applicationsAPI.getAll()
+      ]);
+      setTests(testsData);
+      setApplications(appsData);
+      await fetchSessions();
+    } catch (err) {
+      console.error(err);
+      setMessage({ type: 'error', text: 'Erreur de chargement' });
+    }
+  }
 
   async function fetchSessions() {
     try {
