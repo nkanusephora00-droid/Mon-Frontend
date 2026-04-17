@@ -705,7 +705,7 @@ const Tests: React.FC = () => {
             </div>
             <form onSubmit={handleSubmit} style={styles.testForm}>
               <div style={styles.formRow}>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Fonction *</label>
                   <input
                     type="text"
@@ -716,7 +716,7 @@ const Tests: React.FC = () => {
                     required
                   />
                 </div>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Statut *</label>
                   <select
                     value={formData.statut}
@@ -733,7 +733,7 @@ const Tests: React.FC = () => {
                 </div>
               </div>
               <div style={styles.formRow}>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Précondition</label>
                   <textarea
                     placeholder="Précondition"
@@ -742,7 +742,7 @@ const Tests: React.FC = () => {
                     style={styles.textarea}
                   />
                 </div>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Étapes</label>
                   <textarea
                     placeholder="Étapes"
@@ -753,7 +753,7 @@ const Tests: React.FC = () => {
                 </div>
               </div>
               <div style={styles.formRow}>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Résultat attendu</label>
                   <textarea
                     placeholder="Résultat Attendu"
@@ -762,7 +762,7 @@ const Tests: React.FC = () => {
                     style={styles.textarea}
                   />
                 </div>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Résultat obtenu</label>
                   <textarea
                     placeholder="Résultat Obtenu"
@@ -800,18 +800,18 @@ const Tests: React.FC = () => {
 
       {showEditModal && (
         <div style={styles.modal}>
-          <div style={{ ...styles.modalContent, ...styles.testModalContent }}>
+          <div style={{ ...styles.modalContent, ...styles.sessionModalContent }}>
             <span style={styles.close} onClick={() => { setShowEditModal(false); setEditingTest(null); }}>&times;</span>
             <div style={styles.modalHeader}>
               <h3 style={styles.sectionTitle}>Modifier le test</h3>
             </div>
-            <form onSubmit={handleUpdateTest} style={styles.testForm}>
+            <form onSubmit={handleUpdateTest} style={styles.sessionForm}>
               <input
                 type="hidden"
                 value={formData.sessionId}
               />
               <div style={styles.formRow}>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Fonction *</label>
                   <input
                     type="text"
@@ -822,7 +822,7 @@ const Tests: React.FC = () => {
                     required
                   />
                 </div>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Statut *</label>
                   <select
                     value={formData.statut}
@@ -857,7 +857,7 @@ const Tests: React.FC = () => {
                 />
               </div>
               <div style={styles.formRow}>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Résultat attendu</label>
                   <textarea
                     placeholder="Résultat Attendu"
@@ -866,7 +866,7 @@ const Tests: React.FC = () => {
                     style={styles.textarea}
                   />
                 </div>
-                <div style={styles.formGroupHalf}>
+                <div style={styles.formGroup}>
                   <label style={styles.label}>Résultat obtenu</label>
                   <textarea
                     placeholder="Résultat Obtenu"
