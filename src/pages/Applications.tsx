@@ -298,8 +298,8 @@ const styles: any = {
   tableSection: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '12px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
   sectionTitle: { fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' },
   form: { display: 'flex', flexDirection: 'column' as const, gap: '14px', maxWidth: '720px' },
-  formRow: { display: 'flex', gap: '16px', flexWrap: 'wrap' as const, maxWidth: '400px', margin: '0 auto' as const },
-  formGroup: { flex: '1 1 260px' as const, minWidth: '220px', marginBottom: '16px' },
+  formRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
+  formGroup: { flex: '1 1 250px' as const, minWidth: '200px', marginBottom: '12px' },
   label: { display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' },
   input: { padding: '10px 12px', border: '1px solid var(--border-color)', borderRadius: '8px', fontSize: '14px', width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' },
   textarea: { padding: '10px 12px', border: '1px solid var(--border-color)', borderRadius: '8px', fontSize: '14px', width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)', resize: 'vertical' as const },
@@ -318,7 +318,7 @@ const styles: any = {
   close: { position: 'absolute' as const, top: '15px', right: '20px', fontSize: '28px', cursor: 'pointer', color: 'var(--text-muted)' },
   modalHeader: { marginBottom: '16px' },
   modalSubtitle: { fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px' },
-  modalForm: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
+  modalForm: { display: 'flex', flexDirection: 'column' as const, gap: '16px', padding: '10px 0' },
 };
 
 export default Applications;

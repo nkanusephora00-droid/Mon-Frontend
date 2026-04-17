@@ -192,14 +192,14 @@ const Users: React.FC = () => {
                       <td>{user.email}</td>
                       <td>{user.role === 'admin' ? 'Administrateur' : 'Utilisateur'}</td>
                       <td>{user.isActive ? 'Oui' : 'Non'}</td>
-                      <td style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                        <button style={user.isActive ? {...styles.toggleOnButton, padding: '6px', backgroundColor: 'transparent', color: '#27ae60'} : {...styles.toggleOffButton, padding: '6px', backgroundColor: 'transparent', color: '#95a5a6'}} onClick={() => handleToggleUser(user)} title={user.isActive ? 'Désactiver' : 'Activer'}>
+                      <td style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <button style={user.isActive ? {...styles.toggleOnButton, padding: '8px 12px', backgroundColor: 'transparent', color: '#27ae60'} : {...styles.toggleOffButton, padding: '8px 12px', backgroundColor: 'transparent', color: '#95a5a6'}} onClick={() => handleToggleUser(user)} title={user.isActive ? 'Désactiver' : 'Activer'}>
                           <FontAwesomeIcon icon={user.isActive ? faToggleOn : faToggleOff} />
                         </button>
-                        <button style={{...styles.editButton, padding: '6px', backgroundColor: 'transparent', color: '#3498db'}} onClick={() => openEditModal(user)} title="Modifier">
+                        <button style={{...styles.editButton, padding: '8px 12px', backgroundColor: 'transparent', color: '#3498db'}} onClick={() => openEditModal(user)} title="Modifier">
                           <FontAwesomeIcon icon={faPen} />
                         </button>
-                        <button style={{...styles.deleteButton, padding: '6px', backgroundColor: 'transparent', color: '#ff6b6b'}} onClick={() => handleDelete(user.id)} title="Supprimer">
+                        <button style={{...styles.deleteButton, padding: '8px 12px', backgroundColor: 'transparent', color: '#ff6b6b'}} onClick={() => handleDelete(user.id)} title="Supprimer">
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </td>
@@ -217,54 +217,61 @@ const Users: React.FC = () => {
           <div style={styles.modalContent}>
             <span style={styles.close} onClick={() => setShowModal(false)}>&times;</span>
             <h3>Modifier l'utilisateur</h3>
-            <form onSubmit={handleEdit}>
+            <form onSubmit={handleEdit} style={styles.modalForm}>
               <div style={styles.formGroup}>
-                <label>Nom d'utilisateur</label>
+                <label style={styles.label}>Nom d'utilisateur</label>
                 <input type="text" value={editingUser?.username} disabled style={styles.inputDisabled} />
               </div>
-              <div style={styles.formGroup}>
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={editFormData.email}
-                  onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                  style={styles.input}
-                  required
-                />
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Email</label>
+                  <input
+                    type="email"
+                    value={editFormData.email}
+                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                    style={styles.input}
+                    required
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Rôle</label>
+                  <select
+                    value={editFormData.role}
+                    onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
+                    style={styles.select}
+                  >
+                    <option value="user">Utilisateur</option>
+                    <option value="admin">Administrateur</option>
+                  </select>
+                </div>
               </div>
-              <div style={styles.formGroup}>
-                <label>Rôle</label>
-                <select
-                  value={editFormData.role}
-                  onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
-                  style={styles.select}
-                >
-                  <option value="user">Utilisateur</option>
-                  <option value="admin">Administrateur</option>
-                </select>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Actif</label>
+                  <select
+                    value={editFormData.isActive ? 'true' : 'false'}
+                    onChange={(e) => setEditFormData({ ...editFormData, isActive: e.target.value === 'true' })}
+                    style={styles.select}
+                  >
+                    <option value="true">Oui</option>
+                    <option value="false">Non</option>
+                  </select>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Nouveau mot de passe</label>
+                  <input
+                    type="password"
+                    placeholder="Laisser vide pour garder l'actuel"
+                    value={editFormData.password}
+                    onChange={(e) => setEditFormData({ ...editFormData, password: e.target.value })}
+                    style={styles.input}
+                  />
+                </div>
               </div>
-              <div style={styles.formGroup}>
-                <label>Actif</label>
-                <select
-                  value={editFormData.isActive ? 'true' : 'false'}
-                  onChange={(e) => setEditFormData({ ...editFormData, isActive: e.target.value === 'true' })}
-                  style={styles.select}
-                >
-                  <option value="true">Oui</option>
-                  <option value="false">Non</option>
-                </select>
+              <div style={styles.formActions}>
+                <button type="button" style={styles.cancelButton} onClick={() => setShowModal(false)}>Annuler</button>
+                <button type="submit" style={styles.submitButton}>Enregistrer</button>
               </div>
-              <div style={styles.formGroup}>
-                <label>Nouveau mot de passe (laisser vide pour garder l'actuel)</label>
-                <input
-                  type="password"
-                  value={editFormData.password}
-                  onChange={(e) => setEditFormData({ ...editFormData, password: e.target.value })}
-                  style={styles.input}
-                />
-              </div>
-              <button type="submit" style={styles.submitButton}>Enregistrer</button>
-              <button type="button" style={styles.cancelButton} onClick={() => setShowModal(false)}>Annuler</button>
             </form>
           </div>
         </div>
@@ -299,25 +306,32 @@ const styles = {
     bottom: 0, 
     width: '100%', 
     height: '100%', 
-    backgroundColor: 'rgba(0,0,0,0.5)', 
+    backgroundColor: 'rgba(0,0,0,0.6)', 
     display: 'flex', 
     justifyContent: 'center', 
-    alignItems: 'center', 
+    alignItems: 'flex-start', 
     zIndex: 1000,
-    overflow: 'auto' as const
+    paddingTop: '40px',
+    overflowY: 'auto',
+    backdropFilter: 'blur(4px)'
   },
   modalContent: { 
     backgroundColor: 'var(--bg-card)', 
-    padding: '30px', 
+    padding: '20px', 
     borderRadius: '16px', 
-    width: '90%', 
+    width: '95%', 
     maxWidth: '500px', 
     position: 'relative' as const,
-    margin: 'auto',
-    boxShadow: '0 10px 40px var(--shadow-strong)'
+    margin: '0 auto 40px auto',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+    border: '1px solid var(--border-light)'
   },
   close: { position: 'absolute' as const, top: '15px', right: '20px', fontSize: '28px', cursor: 'pointer', color: 'var(--text-muted)' },
-  formGroup: { marginBottom: '16px' },
+  formGroup: { flex: '1 1 200px' as const, minWidth: '150px', marginBottom: '16px' },
+  formRow: { display: 'flex', gap: '16px', flexWrap: 'wrap' as const },
+  modalForm: { display: 'flex', flexDirection: 'column' as const, gap: '12px' },
+  label: { display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)' },
+  formActions: { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '8px' },
 };
 
 export default Users;
