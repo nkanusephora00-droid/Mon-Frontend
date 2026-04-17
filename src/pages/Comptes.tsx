@@ -350,54 +350,58 @@ const Comptes: React.FC = () => {
             <span style={styles.close} onClick={() => setShowModal(false)}>&times;</span>
             <h3 style={styles.sectionTitle}>Modifier le compte</h3>
             <form onSubmit={handleEdit} style={styles.modalForm}>
-              <div style={styles.formGroup}>
-                <label>Application</label>
-                <select
-                  value={editFormData.applicationId || ''}
-                  onChange={(e) => setEditFormData({ ...editFormData, applicationId: parseInt(e.target.value) })}
-                  style={styles.select}
-                  required
-                >
-                  <option value="">Sélectionnez une application</option>
-                  {applications.map(app => (
-                    <option key={app.id} value={app.id}>{app.nom}</option>
-                  ))}
-                </select>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Application</label>
+                  <select
+                    value={editFormData.applicationId || ''}
+                    onChange={(e) => setEditFormData({ ...editFormData, applicationId: parseInt(e.target.value) })}
+                    style={styles.select}
+                    required
+                  >
+                    <option value="">Sélectionnez une application</option>
+                    {applications.map(app => (
+                      <option key={app.id} value={app.id}>{app.nom}</option>
+                    ))}
+                  </select>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Nom d'utilisateur</label>
+                  <input
+                    type="text"
+                    value={editFormData.username}
+                    onChange={(e) => setEditFormData({ ...editFormData, username: e.target.value })}
+                    style={styles.input}
+                    required
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Code (mot de passe)</label>
+                  <input
+                    type="text"
+                    value={editFormData.code}
+                    onChange={(e) => setEditFormData({ ...editFormData, code: e.target.value })}
+                    style={styles.input}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Rôle</label>
+                  <input
+                    type="text"
+                    value={editFormData.role}
+                    onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
+                    style={styles.input}
+                  />
+                </div>
               </div>
               <div style={styles.formGroup}>
-                <label>Nom d'utilisateur</label>
-                <input
-                  type="text"
-                  value={editFormData.username}
-                  onChange={(e) => setEditFormData({ ...editFormData, username: e.target.value })}
-                  style={styles.input}
-                  required
-                />
-              </div>
-              <div style={styles.formGroup}>
-                <label>Code (mot de passe)</label>
-                <input
-                  type="text"
-                  value={editFormData.code}
-                  onChange={(e) => setEditFormData({ ...editFormData, code: e.target.value })}
-                  style={styles.input}
-                />
-              </div>
-              <div style={styles.formGroup}>
-                <label>Rôle</label>
-                <input
-                  type="text"
-                  value={editFormData.role}
-                  onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
-                  style={styles.input}
-                />
-              </div>
-              <div style={styles.formGroup}>
-                <label>Commentaire</label>
+                <label style={styles.label}>Commentaire</label>
                 <textarea
                   value={editFormData.commentaire}
                   onChange={(e) => setEditFormData({ ...editFormData, commentaire: e.target.value })}
-                  style={styles.input}
+                  style={{ ...styles.textarea, minHeight: '70px' }}
                 />
               </div>
               <div style={styles.formActions}>
