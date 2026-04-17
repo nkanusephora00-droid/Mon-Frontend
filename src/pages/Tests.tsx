@@ -615,7 +615,7 @@ const Tests: React.FC = () => {
             <div style={styles.modalHeader}>
               <h3 style={styles.sectionTitle}>Nouvelle session de test</h3>
               <p style={styles.modalSubtitle}>
-                Créez une session pour regrouper vos cas de test, suivre l’avancement et générer un export PDF.
+                Créez une session pour regrouper vos cas de test et générer un export PDF.
               </p>
             </div>
             <form onSubmit={handleCreateSession} style={styles.sessionForm}>
@@ -702,15 +702,8 @@ const Tests: React.FC = () => {
             <span style={styles.close} onClick={() => setShowTestForm(false)}>&times;</span>
             <div style={styles.modalHeader}>
               <h3 style={styles.sectionTitle}>Nouveau test</h3>
-              <p style={styles.modalSubtitle}>
-                Renseignez clairement le contexte, les étapes et les résultats pour une meilleure lisibilité du scénario de test.
-              </p>
             </div>
             <form onSubmit={handleSubmit} style={styles.testForm}>
-              <input
-                type="hidden"
-                value={formData.sessionId}
-              />
               <div style={styles.formRow}>
                 <div style={styles.formGroupHalf}>
                   <label style={styles.label}>Fonction *</label>
@@ -739,23 +732,25 @@ const Tests: React.FC = () => {
                   </select>
                 </div>
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Précondition</label>
-                <textarea
-                  placeholder="Précondition"
-                  value={formData.precondition}
-                  onChange={(e) => setFormData({ ...formData, precondition: e.target.value })}
-                  style={styles.textarea}
-                />
-              </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Étapes</label>
-                <textarea
-                  placeholder="Étapes"
-                  value={formData.etapes}
-                  onChange={(e) => setFormData({ ...formData, etapes: e.target.value })}
-                  style={styles.textarea}
-                />
+              <div style={styles.formRow}>
+                <div style={styles.formGroupHalf}>
+                  <label style={styles.label}>Précondition</label>
+                  <textarea
+                    placeholder="Précondition"
+                    value={formData.precondition}
+                    onChange={(e) => setFormData({ ...formData, precondition: e.target.value })}
+                    style={styles.textarea}
+                  />
+                </div>
+                <div style={styles.formGroupHalf}>
+                  <label style={styles.label}>Étapes</label>
+                  <textarea
+                    placeholder="Étapes"
+                    value={formData.etapes}
+                    onChange={(e) => setFormData({ ...formData, etapes: e.target.value })}
+                    style={styles.textarea}
+                  />
+                </div>
               </div>
               <div style={styles.formRow}>
                 <div style={styles.formGroupHalf}>
@@ -786,37 +781,6 @@ const Tests: React.FC = () => {
                   style={styles.textarea}
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Image (capture d'écran)</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setFormData({ ...formData, image: reader.result as string });
-                        setImagePreview(reader.result as string);
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  style={styles.fileInput}
-                />
-                {imagePreview && (
-                  <div style={styles.imagePreview}>
-                    <img src={imagePreview} alt="Preview" style={styles.previewImg} />
-                    <button 
-                      type="button" 
-                      onClick={() => { setFormData({ ...formData, image: '' }); setImagePreview(null); }}
-                      style={styles.removeImageBtn}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-              </div>
               <div style={styles.formActions}>
                 <button
                   type="button"
@@ -826,7 +790,7 @@ const Tests: React.FC = () => {
                   Annuler
                 </button>
                 <button type="submit" style={styles.primaryButton}>
-                  Ajouter le test
+                  Ajouter
                 </button>
               </div>
             </form>
@@ -840,9 +804,6 @@ const Tests: React.FC = () => {
             <span style={styles.close} onClick={() => { setShowEditModal(false); setEditingTest(null); }}>&times;</span>
             <div style={styles.modalHeader}>
               <h3 style={styles.sectionTitle}>Modifier le test</h3>
-              <p style={styles.modalSubtitle}>
-                Modifiez les informations du test existant.
-              </p>
             </div>
             <form onSubmit={handleUpdateTest} style={styles.testForm}>
               <input
@@ -977,28 +938,25 @@ const Tests: React.FC = () => {
 
 const styles: any = {
   container: { backgroundColor: 'var(--bg-primary)', minHeight: '100vh' },
-  main: { padding: '30px', maxWidth: '1400px', margin: '0 auto' },
-  pageTitle: { fontSize: '28px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' },
-  pageSubtitle: { fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '24px', fontWeight: '400' },
-  formSection: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '12px', marginBottom: '24px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
-  tableSection: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '12px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
-  sectionTitle: { fontSize: '18px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '16px', paddingBottom: '12px', borderBottom: '2px solid var(--border-light)' },
+  main: { padding: '20px', maxWidth: '1400px', margin: '0 auto' },
+  pageTitle: { fontSize: '24px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' },
+  pageSubtitle: { fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px', fontWeight: '400' },
+  formSection: { backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '10px', marginBottom: '16px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
+  tableSection: { backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '10px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
+  sectionTitle: { fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '12px', paddingBottom: '8px', borderBottom: '2px solid var(--border-light)' },
   form: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
-  input: { padding: '12px 14px', border: '1px solid var(--border-color)', borderRadius: '8px', flex: '1 1 200px', fontSize: '14px', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)', maxWidth: '100%', transition: 'border-color 0.2s, box-shadow 0.2s' },
+  input: { padding: '8px 10px', border: '1px solid var(--border-color)', borderRadius: '6px', flex: '1 1 150px', fontSize: '13px', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)', maxWidth: '100%', transition: 'border-color 0.2s, box-shadow 0.2s' },
   inputFocus: { borderColor: 'var(--info-color)', boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)' },
-  textarea: { padding: '10px 12px', border: '1px solid var(--border-color)', borderRadius: '8px', flex: '1 1 200px', fontSize: '14px', minHeight: '50px', maxHeight: '80px', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)', resize: 'vertical' as const, width: '100%', overflow: 'auto', transition: 'border-color 0.2s, box-shadow 0.2s' },
-  select: { padding: '12px 14px', border: '1px solid var(--border-color)', borderRadius: '8px', flex: '1 1 200px', fontSize: '14px', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)', cursor: 'pointer', transition: 'border-color 0.2s' },
-  label: { display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '600', color: 'var(--text-secondary)' },
-  imageUpload: { marginBottom: '15px', padding: '15px', border: '2px dashed var(--info-color)', borderRadius: '8px', backgroundColor: 'var(--hover-bg)' },
-  imageLabel: { display: 'block', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' },
-  fileInput: { padding: '10px', border: '1px solid var(--border-color)', borderRadius: '8px', width: '100%', fontSize: '14px', backgroundColor: 'var(--bg-card)' },
-  imagePreview: { position: 'relative', marginTop: '15px', display: 'inline-block' },
-  previewImg: { maxWidth: '200px', maxHeight: '150px', borderRadius: '8px', border: '2px solid var(--info-color)' },
-  removeImageBtn: { position: 'absolute', top: '-10px', right: '-10px', backgroundColor: 'var(--danger-color)', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', fontSize: '16px', lineHeight: '1' },
-  submitButton: { padding: '12px 28px', backgroundColor: 'var(--success-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '14px', transition: 'background-color 0.2s, transform 0.1s', display: 'flex', alignItems: 'center', gap: '8px' },
-  formActions: { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '6px' },
-  primaryButton: { padding: '10px 16px', backgroundColor: 'var(--success-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '700', fontSize: '13px' },
-  secondaryButton: { padding: '10px 14px', backgroundColor: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '13px' },
+  textarea: { padding: '8px 10px', border: '1px solid var(--border-color)', borderRadius: '6px', flex: '1 1 150px', fontSize: '13px', minHeight: '50px', maxHeight: '70px', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)', resize: 'vertical' as const, width: '100%', overflow: 'auto', transition: 'border-color 0.2s, box-shadow 0.2s' },
+  select: { padding: '8px 10px', border: '1px solid var(--border-color)', borderRadius: '6px', flex: '1 1 150px', fontSize: '13px', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)', cursor: 'pointer', transition: 'border-color 0.2s' },
+  label: { display: 'block', marginBottom: '4px', fontSize: '12px', fontWeight: '600', color: 'var(--text-secondary)' },
+  fileInput: { padding: '8px', border: '1px solid var(--border-color)', borderRadius: '6px', width: '100%', fontSize: '13px', backgroundColor: 'var(--bg-card)' },
+  imagePreview: { position: 'relative', marginTop: '10px', display: 'inline-block' },
+  previewImg: { maxWidth: '150px', maxHeight: '100px', borderRadius: '6px', border: '2px solid var(--info-color)' },
+  removeImageBtn: { position: 'absolute', top: '-8px', right: '-8px', backgroundColor: 'var(--danger-color)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '14px', lineHeight: '1' },
+  formActions: { display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '4px' },
+  primaryButton: { padding: '8px 14px', backgroundColor: 'var(--success-color)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '12px' },
+  secondaryButton: { padding: '8px 12px', backgroundColor: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '12px' },
   deleteButton: { padding: '8px 14px', backgroundColor: 'var(--danger-color)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', transition: 'opacity 0.2s' },
   table: { width: '100%', borderCollapse: 'collapse' as const, borderRadius: '8px', overflow: 'hidden' },
   success: { padding: '14px', backgroundColor: 'var(--success-color)', color: 'white', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' },
@@ -1011,56 +969,30 @@ const styles: any = {
   testsSubtitle: { fontSize: '13px', color: 'var(--text-secondary)' },
   sessionInfo: { fontSize: '13px', color: 'var(--text-secondary)', margin: '5px 0' },
   modal: { position: 'fixed' as const, top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', zIndex: 1000, paddingTop: '40px', overflowY: 'auto', backdropFilter: 'blur(4px)' },
-  modalContent: { backgroundColor: 'var(--bg-card)', padding: '32px', borderRadius: '16px', width: '95%', maxWidth: '850px', position: 'relative' as const, boxShadow: '0 20px 60px rgba(0,0,0,0.3)', marginBottom: '40px', border: '1px solid var(--border-light)' },
-  sessionModalContent: { maxWidth: '640px', padding: '24px' },
-  testModalContent: { maxWidth: '600px', padding: '22px' },
-  close: { position: 'absolute' as const, top: '16px', right: '20px', fontSize: '28px', cursor: 'pointer', color: 'var(--text-muted)', transition: 'color 0.2s', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' },
-  modalHeader: { marginBottom: '20px' },
-  modalSubtitle: { fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px' },
-  formGroup: { marginBottom: '18px', flex: '1 1 100%' as const, minWidth: '100%' },
-  formGroupHalf: { marginBottom: '16px', flex: '1 1 220px' as const, minWidth: '200px' },
-  formRow: { display: 'flex', gap: '20px', flexWrap: 'wrap' as const, width: '100%' },
-  sessionForm: { display: 'flex', flexDirection: 'column' as const, gap: '16px', width: '100%', maxWidth: '750px', margin: '0 auto' },
-  testForm: { display: 'flex', flexDirection: 'column' as const, gap: '12px', width: '100%', maxWidth: '560px', margin: '0 auto' },
-  sessionsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px' },
-  sessionsHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap' as const, gap: '16px' },
-  newSessionButton: { padding: '12px 24px', backgroundColor: 'var(--info-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px', transition: 'background-color 0.2s, transform 0.1s' },
-  sessionStatusSelect: {
-    padding: '6px 10px',
-    fontSize: '12px',
-    minWidth: '112px',
-    borderRadius: '999px',
-    border: '1px solid var(--border-color)',
-    backgroundColor: 'var(--bg-primary)',
-    color: 'var(--text-primary)',
-    fontWeight: 700,
-    cursor: 'pointer',
-  },
-  sessionStatusInProgress: {
-    backgroundColor: 'rgba(243, 156, 18, 0.14)',
-    borderColor: 'rgba(243, 156, 18, 0.35)',
-    color: 'var(--warning-color)',
-  },
-  sessionStatusDone: {
-    backgroundColor: 'rgba(39, 174, 96, 0.14)',
-    borderColor: 'rgba(39, 174, 96, 0.35)',
-    color: 'var(--success-color)',
-  },
-  addTestButton: { padding: '10px 16px', backgroundColor: 'var(--info-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '8px', transition: 'background-color 0.2s, transform 0.1s' },
-  sessionCard: { backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)', ':hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 16px var(--shadow-color)' } },
-  addSessionIcon: { fontSize: '48px', color: 'var(--info-color)', textAlign: 'center', marginBottom: '10px', lineHeight: '1' },
-  addSessionText: { textAlign: 'center', color: 'var(--info-color)', fontWeight: '600' },
-  sessionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '12px' },
-  sessionTitle: { margin: 0, color: 'var(--text-primary)', fontSize: '18px', fontWeight: '600', flex: 1 },
-  sessionDesc: { color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '15px', lineHeight: '1.5', minHeight: '42px' },
-  sessionStats: { display: 'flex', gap: '20px', marginBottom: '15px', fontSize: '14px', padding: '12px', backgroundColor: 'var(--hover-bg)', borderRadius: '8px' },
-  statOk: { color: 'var(--success-color)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' },
-  statBug: { color: 'var(--danger-color)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' },
-  sessionActions: { display: 'flex', gap: '10px', flexWrap: 'wrap' as const },
-  viewButton: { padding: '10px 16px', backgroundColor: 'var(--info-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', flex: 1, fontWeight: '500', fontSize: '13px', transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' },
-  exportButton: { padding: '10px 16px', backgroundColor: 'var(--danger-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '500', fontSize: '13px', transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' },
-  backButton: { padding: '12px 20px', backgroundColor: 'var(--text-muted)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', marginBottom: '20px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px', transition: 'opacity 0.2s' },
-  currentSessionInfo: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '12px', marginBottom: '20px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
+  modalContent: { backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '16px', width: '95%', maxWidth: '600px', position: 'relative' as const, boxShadow: '0 20px 60px rgba(0,0,0,0.3)', marginBottom: '40px', border: '1px solid var(--border-light)' },
+  sessionModalContent: { maxWidth: '500px', padding: '16px' },
+  testModalContent: { maxWidth: '500px', padding: '16px' },
+  close: { position: 'absolute' as const, top: '10px', right: '14px', fontSize: '24px', cursor: 'pointer', color: 'var(--text-muted)', transition: 'color 0.2s', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' },
+  modalHeader: { marginBottom: '12px' },
+  modalSubtitle: { fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' },
+  formGroup: { marginBottom: '12px', flex: '1 1 100%' as const, minWidth: '100%' },
+  formGroupHalf: { marginBottom: '12px', flex: '1 1 200px' as const, minWidth: '180px' },
+  formRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const, width: '100%' },
+  sessionForm: { display: 'flex', flexDirection: 'column' as const, gap: '12px', width: '100%', maxWidth: '450px', margin: '0 auto' },
+  testForm: { display: 'flex', flexDirection: 'column' as const, gap: '10px', width: '100%', maxWidth: '450px', margin: '0 auto' },
+  sessionsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' },
+  sessionsHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' as const, gap: '12px' },
+  newSessionButton: { padding: '10px 18px', backgroundColor: 'var(--info-color)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', transition: 'background-color 0.2s, transform 0.1s' },
+  sessionCard: { backgroundColor: 'var(--bg-card)', padding: '14px', borderRadius: '10px', cursor: 'pointer', transition: 'all 0.2s ease', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
+  sessionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '8px' },
+  sessionTitle: { margin: 0, color: 'var(--text-primary)', fontSize: '16px', fontWeight: '600', flex: 1 },
+  sessionDesc: { color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '10px', lineHeight: '1.4', minHeight: '36px' },
+  sessionStats: { display: 'flex', gap: '12px', marginBottom: '10px', fontSize: '13px', padding: '8px', backgroundColor: 'var(--hover-bg)', borderRadius: '6px' },
+  sessionActions: { display: 'flex', gap: '8px', flexWrap: 'wrap' as const },
+  viewButton: { padding: '8px 12px', backgroundColor: 'var(--info-color)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', flex: 1, fontWeight: '500', fontSize: '12px', transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' },
+  exportButton: { padding: '8px 12px', backgroundColor: 'var(--danger-color)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '12px', transition: 'opacity 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' },
+  backButton: { padding: '10px 16px', backgroundColor: 'var(--text-muted)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', marginBottom: '12px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '6px', transition: 'opacity 0.2s' },
+  currentSessionInfo: { backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '10px', marginBottom: '14px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },
   statutTermine: { padding: '6px 12px', backgroundColor: 'var(--success-color)', color: 'white', borderRadius: '20px', fontSize: '12px', fontWeight: '500' },
 };
 
