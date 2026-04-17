@@ -85,5 +85,4 @@ export const testSessionsAPI = {
   delete: async (id: number) => (await api.delete(`/test-sessions/${id}`)).data,
 };
 
-export { api };
 export default api;
