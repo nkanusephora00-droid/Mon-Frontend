@@ -312,7 +312,7 @@ const styles = {
     alignItems: 'flex-start', 
     zIndex: 1000,
     paddingTop: '40px',
-    overflowY: 'auto',
+    overflowY: 'auto' as const,
     backdropFilter: 'blur(4px)'
   },
   modalContent: { 

@@ -313,7 +313,7 @@ const styles: any = {
   listSubtitle: { fontSize: '13px', color: 'var(--text-secondary)' },
   success: { padding: '14px', backgroundColor: 'var(--success-color)', color: 'white', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' },
   error: { padding: '14px', backgroundColor: 'var(--danger-color)', color: 'white', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' },
-  modal: { position: 'fixed' as const, top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', zIndex: 1000, paddingTop: '40px', overflowY: 'auto', backdropFilter: 'blur(4px)' },
+  modal: { position: 'fixed' as const, top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', zIndex: 1000, paddingTop: '40px', overflowY: 'auto' as const, backdropFilter: 'blur(4px)' },
   modalContent: { backgroundColor: 'var(--bg-card)', padding: '20px', borderRadius: '16px', width: '95%', maxWidth: '600px', position: 'relative' as const, boxShadow: '0 20px 60px rgba(0,0,0,0.3)', marginBottom: '40px', border: '1px solid var(--border-light)' },
   close: { position: 'absolute' as const, top: '15px', right: '20px', fontSize: '28px', cursor: 'pointer', color: 'var(--text-muted)' },
   modalHeader: { marginBottom: '16px' },

@@ -1,14 +1,40 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-// Use environment variable or fallback to localhost for development
-const API_URL = process.env.REACT_APP_API_URL || "https://itaccess-backend.onrender.com";
+const ONLINE_API = "https://itaccess-backend.onrender.com";
+const LOCAL_API = "http://localhost:8080";
 
-export const api = axios.create({
-  baseURL: API_URL,
+let currentApi = ONLINE_API;
+let useLocal = false;
+
+const createApi = (baseURL: string) => axios.create({
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 10000,
 });
+
+export const api = createApi(ONLINE_API);
+
+// Try online first, fallback to local
+const tryApi = async (requestFn: () => Promise<any>): Promise<any> => {
+  try {
+    return await requestFn();
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    const isNetworkError = !axiosError.response && axiosError.message === "Network Error";
+    const isCorsError = axiosError.message?.includes("CORS") || axiosError.message?.includes("Network Error");
+    
+    if ((isNetworkError || isCorsError) && !useLocal) {
+      console.log("Online API unavailable, trying local...");
+      useLocal = true;
+      currentApi = LOCAL_API;
+      const localApi = createApi(LOCAL_API);
+      return await requestFn.call(localApi, localApi);
+    }
+    throw error;
+  }
+};
 
 // Add token to requests
 api.interceptors.request.use((config) => {
@@ -40,27 +66,35 @@ api.interceptors.response.use(
 // Auth API
 export const authAPI = {
   login: async (username: string, password: string) => {
-    console.log("Envoi de la requête vers:", `${API_URL}/auth/token`);
-    const response = await api.post("/auth/token", { username, password }, {
-      headers: { "Content-Type": "application/json" },
+    console.log("Envoi de la requête vers:", `${currentApi}/auth/token`);
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.post("/auth/token", { username, password }, {
+        headers: { "Content-Type": "application/json" },
+      });
+      return response.data;
     });
-    return response.data;
   },
   me: async () => {
-    const response = await api.get("/auth/me");
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get("/auth/me");
+      return response.data;
+    });
   },
 };
 
 // Users API
 export const usersAPI = {
   getAll: async () => {
-    const response = await api.get("/users");
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get("/users");
+      return response.data;
+    });
   },
   getById: async (id: number) => {
-    const response = await api.get(`/users/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get(`/users/${id}`);
+      return response.data;
+    });
   },
   create: async (data: {
     username: string;
@@ -68,8 +102,10 @@ export const usersAPI = {
     role: string;
     password: string;
   }) => {
-    const response = await api.post("/users", data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.post("/users", data);
+      return response.data;
+    });
   },
   update: async (
     id: number,
@@ -80,24 +116,32 @@ export const usersAPI = {
       password?: string;
     },
   ) => {
-    const response = await api.put(`/users/${id}`, data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.put(`/users/${id}`, data);
+      return response.data;
+    });
   },
   delete: async (id: number) => {
-    const response = await api.delete(`/users/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.delete(`/users/${id}`);
+      return response.data;
+    });
   },
 };
 
 // Applications API
 export const applicationsAPI = {
   getAll: async () => {
-    const response = await api.get("/applications");
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get("/applications");
+      return response.data;
+    });
   },
   getById: async (id: number) => {
-    const response = await api.get(`/applications/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get(`/applications/${id}`);
+      return response.data;
+    });
   },
   create: async (data: {
     nom: string;
@@ -105,8 +149,10 @@ export const applicationsAPI = {
     version?: string;
     environnement?: string;
   }) => {
-    const response = await api.post("/applications", data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.post("/applications", data);
+      return response.data;
+    });
   },
   update: async (
     id: number,
@@ -117,24 +163,32 @@ export const applicationsAPI = {
       environnement?: string;
     },
   ) => {
-    const response = await api.put(`/applications/${id}`, data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.put(`/applications/${id}`, data);
+      return response.data;
+    });
   },
   delete: async (id: number) => {
-    const response = await api.delete(`/applications/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.delete(`/applications/${id}`);
+      return response.data;
+    });
   },
 };
 
 // Comptes API
 export const comptesAPI = {
   getAll: async () => {
-    const response = await api.get("/comptes");
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get("/comptes");
+      return response.data;
+    });
   },
   getById: async (id: number) => {
-    const response = await api.get(`/comptes/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get(`/comptes/${id}`);
+      return response.data;
+    });
   },
   create: async (data: {
     applicationId: number;
@@ -143,34 +197,42 @@ export const comptesAPI = {
     role?: string;
     commentaire?: string;
   }) => {
-    const response = await api.post("/comptes", data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.post("/comptes", data);
+      return response.data;
+    });
   },
   update: async (
     id: number,
     data: {
       applicationId: number;
-    username: string;
-    code?: string;
-    role?: string;
-    commentaire?: string;
+      username: string;
+      code?: string;
+      role?: string;
+      commentaire?: string;
     },
   ) => {
-    const response = await api.put(`/comptes/${id}`, data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.put(`/comptes/${id}`, data);
+      return response.data;
+    });
   },
   delete: async (id: number) => {
-    const response = await api.delete(`/comptes/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.delete(`/comptes/${id}`);
+      return response.data;
+    });
   },
 };
 
 // Tests API
 export const testsAPI = {
   getAll: async (sessionId?: number) => {
-    const params = sessionId ? { sessionId } : {};
-    const response = await api.get("/tests", { params });
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const params = sessionId ? { sessionId } : {};
+      const response = await axiosInstance.get("/tests", { params });
+      return response.data;
+    });
   },
   create: async (data: {
     sessionId?: number;
@@ -187,8 +249,10 @@ export const testsAPI = {
     commentaires?: string;
     image?: string;
   }) => {
-    const response = await api.post("/tests", data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.post("/tests", data);
+      return response.data;
+    });
   },
   update: async (
     id: number,
@@ -208,20 +272,26 @@ export const testsAPI = {
       image?: string;
     },
   ) => {
-    const response = await api.put(`/tests/${id}`, data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.put(`/tests/${id}`, data);
+      return response.data;
+    });
   },
   delete: async (id: number) => {
-    const response = await api.delete(`/tests/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.delete(`/tests/${id}`);
+      return response.data;
+    });
   },
 };
 
 // Test Sessions API
 export const testSessionsAPI = {
   getAll: async () => {
-    const response = await api.get("/test-sessions");
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.get("/test-sessions");
+      return response.data;
+    });
   },
   create: async (data: {
     nom: string;
@@ -232,8 +302,10 @@ export const testSessionsAPI = {
     version?: string;
     statut?: string;
   }) => {
-    const response = await api.post("/test-sessions", data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.post("/test-sessions", data);
+      return response.data;
+    });
   },
   update: async (
     id: number,
@@ -247,12 +319,16 @@ export const testSessionsAPI = {
       statut?: string;
     },
   ) => {
-    const response = await api.put(`/test-sessions/${id}`, data);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.put(`/test-sessions/${id}`, data);
+      return response.data;
+    });
   },
   delete: async (id: number) => {
-    const response = await api.delete(`/test-sessions/${id}`);
-    return response.data;
+    return tryApi(async (axiosInstance = api) => {
+      const response = await axiosInstance.delete(`/test-sessions/${id}`);
+      return response.data;
+    });
   },
 };
 
