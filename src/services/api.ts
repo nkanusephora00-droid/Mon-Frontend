@@ -29,8 +29,7 @@ const tryApi = async (requestFn: () => Promise<any>): Promise<any> => {
       console.log("Online API unavailable, trying local...");
       useLocal = true;
       currentApi = LOCAL_API;
-      const localApi = createApi(LOCAL_API);
-      return await requestFn.call(localApi, localApi);
+      return await requestFn();
     }
     throw error;
   }
