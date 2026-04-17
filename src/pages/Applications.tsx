@@ -64,6 +64,7 @@ const Applications: React.FC = () => {
       setMessage({ type: 'success', text: 'Application mise à jour avec succès!' });
       setShowModal(false);
       setEditingApp(null);
+      setEditFormData({ nom: '', description: '', version: '', environnement: '' });
       fetchApplications();
     } catch (err: any) {
       setMessage({ type: 'error', text: err.response?.data?.detail || 'Erreur lors de la mise à jour' });
@@ -126,7 +127,7 @@ const Applications: React.FC = () => {
           {loading ? (
             <p>Chargement...</p>
           ) : (
-            <div style={{ overflowX: 'auto', margin: '0 -12px', padding: '0 12px' }}>
+            <div className="table-container" style={{ overflowX: 'auto', margin: '0 -12px', padding: '0 12px' }}>
               <table style={styles.table}>
                 <thead>
                   <tr>

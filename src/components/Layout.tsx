@@ -69,6 +69,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+    document.body.classList.toggle('menu-open', !mobileMenuOpen);
   };
 
   const handleNavClick = (itemPath: string) => {
@@ -292,10 +293,10 @@ const styles = {
     backgroundColor: "var(--bg-primary)",
   },
   mobileMenuToggle: {
-    display: "none",
+    display: "flex",
     position: "fixed" as const,
-    top: "12px",
-    left: "12px",
+    top: "8px",
+    left: "8px",
     zIndex: 1001,
     width: "44px",
     height: "44px",
@@ -337,35 +338,48 @@ styleSheet.textContent = `
       z-index: 1000 !important;
       transition: left 0.3s ease !important;
       top: 0;
+      overflow-y: auto;
     }
     
     /* Sidebar shown when mobile menu is open */
     aside.sidebar-mobile-open,
-    aside[style*="left: 0"] {
+    aside[style*="left: 0"],
+    aside.sidebar-open {
       left: 0 !important;
     }
     
     /* Main content wrapper - remove margin on mobile */
-    .main-wrapper,
-    div[style*="marginLeft: 260px"] {
+    .main-wrapper {
       margin-left: 0 !important;
       width: 100% !important;
+      flex: 1;
     }
     
     /* Header adjustments */
     header {
       padding: 0 15px 0 60px !important;
       height: 60px !important;
+      position: sticky !important;
     }
     
     header h1 {
       font-size: 16px !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* User badge hide on small mobile */
+    .headerUser span,
+    header > div:last-child {
+      display: none !important;
     }
     
     /* Main content */
     main {
       padding: 15px !important;
       margin-top: 0 !important;
+      min-height: calc(100vh - 60px);
     }
     
     /* Show hamburger menu button */
@@ -373,7 +387,7 @@ styleSheet.textContent = `
       display: flex !important;
     }
     
-    /* Mobile overlay */
+    /* Mobile overlay - always show when menu open */
     .mobile-overlay {
       display: block !important;
       position: fixed !important;
@@ -383,6 +397,17 @@ styleSheet.textContent = `
       bottom: 0 !important;
       background-color: rgba(0, 0, 0, 0.5) !important;
       z-index: 999 !important;
+    }
+  }
+
+  /* Tablet specific fixes */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .main-wrapper {
+      margin-left: 0 !important;
+    }
+
+    header h1 {
+      font-size: 18px !important;
     }
   }
   
@@ -397,6 +422,11 @@ styleSheet.textContent = `
     .login-title {
       font-size: 24px !important;
     }
+  }
+
+  /* Prevent body scroll when mobile menu is open */
+  body.menu-open {
+    overflow: hidden;
   }
 `;
 document.head.appendChild(styleSheet);

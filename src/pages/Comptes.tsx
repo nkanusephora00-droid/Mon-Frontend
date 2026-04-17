@@ -87,6 +87,7 @@ const Comptes: React.FC = () => {
       setMessage({ type: 'success', text: 'Compte mis à jour avec succès!' });
       setShowModal(false);
       setEditingCompte(null);
+      setEditFormData({ applicationId: 0, username: '', code: '', role: '', commentaire: '' });
       fetchData();
     } catch (err: any) {
       setMessage({ type: 'error', text: err.response?.data?.detail || 'Erreur lors de la mise à jour' });
@@ -192,7 +193,7 @@ const Comptes: React.FC = () => {
               </div>
               
               {/* Desktop Table View */}
-              <div className="comptes-table" style={{ overflowX: 'auto', margin: '0 -12px', padding: '0 12px' }}>
+              <div className="comptes-table table-container" style={{ overflowX: 'auto', margin: '0 -12px', padding: '0 12px' }}>
                 <table style={styles.table}>
                   <thead>
                     <tr>

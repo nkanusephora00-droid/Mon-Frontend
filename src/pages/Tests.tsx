@@ -306,6 +306,18 @@ const Tests: React.FC = () => {
       setShowEditModal(false);
       setEditingTest(null);
       setImagePreview(null);
+      setFormData({
+        sessionId: 0,
+        applicationId: 0,
+        fonction: '',
+        precondition: '',
+        etapes: '',
+        resultatAttendu: '',
+        resultatObtenu: '',
+        statut: '',
+        commentaires: '',
+        image: ''
+      });
       fetchData();
       fetchSessions();
     } catch (err: any) {

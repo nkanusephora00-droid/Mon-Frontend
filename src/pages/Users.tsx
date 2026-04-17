@@ -172,7 +172,7 @@ const Users: React.FC = () => {
           {loading ? (
             <p>Chargement...</p>
           ) : (
-            <div style={{ overflowX: 'auto', margin: '0 -12px', padding: '0 12px' }}>
+            <div className="table-container" style={{ overflowX: 'auto', margin: '0 -12px', padding: '0 12px' }}>
               <table style={styles.table}>
                 <thead>
                   <tr>

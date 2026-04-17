@@ -317,37 +317,104 @@ button:active {
     width: 100%;
   }
 
-  /* Table mobile - horizontal scroll */
+  /* ==================== TABLE RESPONSIVE FIXES ==================== */
+  /* Table container with proper scrolling */
+  .table-container,
+  div[style*="overflowX"],
+  div[style*="overflow-x"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -15px !important;
+    padding: 0 15px !important;
+    width: calc(100% + 30px) !important;
+  }
+
+  /* Table mobile styles */
   table {
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    font-size: 12px;
+    font-size: 13px;
+    min-width: 600px; /* Force scroll on small screens */
   }
 
   th, td {
-    padding: 8px 6px;
+    padding: 12px 10px;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: 13px;
+    min-width: 80px;
   }
 
-  /* Action buttons smaller on mobile */
+  th:first-child,
+  td:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--bg-card);
+    z-index: 1;
+  }
+
+  th:first-child {
+    background: var(--bg-primary);
+  }
+
+  /* Action buttons in tables */
+  td[style*="flex"],
+  td buttons-wrapper {
+    display: flex !important;
+    gap: 8px !important;
+    justify-content: flex-start !important;
+  }
+
   td button {
-    padding: 4px 6px !important;
-    min-height: 32px;
-    min-width: 32px;
+    padding: 8px 12px !important;
+    min-height: 36px;
+    min-width: 36px;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Modal full screen on mobile */
   .modal {
     padding: 10px !important;
+    align-items: flex-start !important;
+    padding-top: 20px !important;
   }
 
   .modal-content {
     width: 100% !important;
     max-width: 100% !important;
-    margin: 10px 0 !important;
-    padding: 15px !important;
+    margin: 0 0 20px 0 !important;
+    padding: 20px !important;
+    border-radius: 12px 12px 0 0 !important;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Form rows - stack on mobile */
+  .form-row,
+  div[style*="flexWrap"] {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .form-row > div {
+    flex: 1 1 100% !important;
+    min-width: 100% !important;
+  }
+
+  /* Page header mobile */
+  .page-header,
+  div[style*="justifyContent"],
+  header > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  header .primaryButton {
+    width: 100%;
+    justify-content: center;
   }
 }
 
