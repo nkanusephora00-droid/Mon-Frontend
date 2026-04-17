@@ -1,34 +1,18 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
-const ONLINE_API = "https://itaccess-backend.onrender.com";
-const LOCAL_API = "http://localhost:8080";
+const API_URL = "https://itaccess-backend.onrender.com";
 
-const createApi = (baseURL: string) => axios.create({
-  baseURL,
+export const api = axios.create({
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
   timeout: 15000,
 });
 
-const api = createApi(ONLINE_API);
-const localApi = createApi(LOCAL_API);
-
-let useLocal = false;
-
-// Add token to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
   console.log("API Request:", config.method?.toUpperCase(), config.url);
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-localApi.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
-  console.log("API Request (local):", config.method?.toUpperCase(), config.url);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -43,91 +27,63 @@ api.interceptors.response.use(
   },
 );
 
-// Simple fallback - use online by default
-export const getApi = () => {
-  if (useLocal) return localApi;
-  return api;
-};
-
 // Auth API
 export const authAPI = {
   login: async (username: string, password: string) => {
-    const instance = getApi();
-    console.log("Login attempt to:", instance.defaults.baseURL);
-    try {
-      const response = await instance.post("/auth/token", { username, password });
-      return response.data;
-    } catch (error: any) {
-      // Try local if online fails
-      if (!useLocal && (error.code === 'ERR_NETWORK' || error.message?.includes('Network'))) {
-        console.log("Online failed, trying local...");
-        useLocal = true;
-        const localResponse = await localApi.post("/auth/token", { username, password });
-        return localResponse.data;
-      }
-      throw error;
-    }
+    const response = await api.post("/auth/token", { username, password });
+    return response.data;
   },
   me: async () => {
-    const instance = getApi();
-    try {
-      const response = await instance.get("/auth/me");
-      return response.data;
-    } catch (error: any) {
-      if (!useLocal && (error.code === 'ERR_NETWORK' || error.message?.includes('Network'))) {
-        useLocal = true;
-        const localResponse = await localApi.get("/auth/me");
-        return localResponse.data;
-      }
-      throw error;
-    }
+    const response = await api.get("/auth/me");
+    return response.data;
   },
 };
 
 // Users API
 export const usersAPI = {
-  getAll: async () => (await getApi()).get("/users").then(r => r.data),
-  getById: async (id: number) => (await getApi()).get(`/users/${id}`).then(r => r.data),
-  create: async (data: any) => (await getApi()).post("/users", data).then(r => r.data),
-  update: async (id: number, data: any) => (await getApi()).put(`/users/${id}`, data).then(r => r.data),
-  delete: async (id: number) => (await getApi()).delete(`/users/${id}`).then(r => r.data),
+  getAll: async () => (await api.get("/users")).data,
+  getById: async (id: number) => (await api.get(`/users/${id}`)).data,
+  create: async (data: any) => (await api.post("/users", data)).data,
+  update: async (id: number, data: any) => (await api.put(`/users/${id}`, data)).data,
+  delete: async (id: number) => (await api.delete(`/users/${id}`)).data,
 };
 
 // Applications API
 export const applicationsAPI = {
-  getAll: async () => (await getApi()).get("/applications").then(r => r.data),
-  getById: async (id: number) => (await getApi()).get(`/applications/${id}`).then(r => r.data),
-  create: async (data: any) => (await getApi()).post("/applications", data).then(r => r.data),
-  update: async (id: number, data: any) => (await getApi()).put(`/applications/${id}`, data).then(r => r.data),
-  delete: async (id: number) => (await getApi()).delete(`/applications/${id}`).then(r => r.data),
+  getAll: async () => (await api.get("/applications")).data,
+  getById: async (id: number) => (await api.get(`/applications/${id}`)).data,
+  create: async (data: any) => (await api.post("/applications", data)).data,
+  update: async (id: number, data: any) => (await api.put(`/applications/${id}`, data)).data,
+  delete: async (id: number) => (await api.delete(`/applications/${id}`)).data,
 };
 
 // Comptes API
 export const comptesAPI = {
-  getAll: async () => (await getApi()).get("/comptes").then(r => r.data),
-  getById: async (id: number) => (await getApi()).get(`/comptes/${id}`).then(r => r.data),
-  create: async (data: any) => (await getApi()).post("/comptes", data).then(r => r.data),
-  update: async (id: number, data: any) => (await getApi()).put(`/comptes/${id}`, data).then(r => r.data),
-  delete: async (id: number) => (await getApi()).delete(`/comptes/${id}`).then(r => r.data),
+  getAll: async () => (await api.get("/comptes")).data,
+  getById: async (id: number) => (await api.get(`/comptes/${id}`)).data,
+  create: async (data: any) => (await api.post("/comptes", data)).data,
+  update: async (id: number, data: any) => (await api.put(`/comptes/${id}`, data)).data,
+  delete: async (id: number) => (await api.delete(`/comptes/${id}`)).data,
 };
 
 // Tests API
 export const testsAPI = {
   getAll: async (sessionId?: number) => {
     const params = sessionId ? { sessionId } : {};
-    return (await getApi()).get("/tests", { params }).then(r => r.data);
+    return (await api.get("/tests", { params })).data;
   },
-  create: async (data: any) => (await getApi()).post("/tests", data).then(r => r.data),
-  update: async (id: number, data: any) => (await getApi()).put(`/tests/${id}`, data).then(r => r.data),
-  delete: async (id: number) => (await getApi()).delete(`/tests/${id}`).then(r => r.data),
+  create: async (data: any) => (await api.post("/tests", data)).data,
+  update: async (id: number, data: any) => (await api.put(`/tests/${id}`, data)).data,
+  delete: async (id: number) => (await api.delete(`/tests/${id}`)).data,
 };
 
 // Test Sessions API
 export const testSessionsAPI = {
-  getAll: async () => (await getApi()).get("/test-sessions").then(r => r.data),
-  create: async (data: any) => (await getApi()).post("/test-sessions", data).then(r => r.data),
-  update: async (id: number, data: any) => (await getApi()).put(`/test-sessions/${id}`, data).then(r => r.data),
-  delete: async (id: number) => (await getApi()).delete(`/test-sessions/${id}`).then(r => r.data),
+  getAll: async () => (await api.get("/test-sessions")).data,
+  create: async (data: any) => (await api.post("/test-sessions", data)).data,
+  update: async (id: number, data: any) => (await api.put(`/test-sessions/${id}`, data)).data,
+  delete: async (id: number) => (await api.delete(`/test-sessions/${id}`)).data,
 };
 
+export { api };
 export default api;
