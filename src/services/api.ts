@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://itaccess-backend.onrender.com";
+const API_URL = "https://mon-backend-rrb8.onrender.com";
 
 export const api = axios.create({
   baseURL: API_URL,
