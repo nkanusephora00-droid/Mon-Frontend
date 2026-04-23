@@ -105,7 +105,7 @@ const Users: React.FC = () => {
     setEditFormData({
       email: user.email,
       role: user.role,
-      isActive: user.isActive,
+      isActive: user.isActive ?? true,
       password: '',
     });
     setShowModal(true);

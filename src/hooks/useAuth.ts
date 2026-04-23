@@ -74,9 +74,9 @@ export const useAuth = () => {
       });
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error('Auth check failed:', error);
-      }
-      logout();
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Auth check failed:', error);
+        out();
     } finally {
       setLoading(false);
     }

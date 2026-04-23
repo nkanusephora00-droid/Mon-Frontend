@@ -20,8 +20,8 @@ const Login: React.FC = () => {
       }
        const data = await authAPI.login(username, password);
        if (process.env.NODE_ENV === 'development') {
-         console.log("Login: Login response:", data);
-         console.log("Login: Storing token:", data.accessToken ? data.accessToken.substring(0, 20) + "..." : "NO TOKEN");
+        console.log("Login: Login response:", data);
+        console.log("Login: Storing token:", data.accessToken ? data.accessToken.substring(0, 20) + "..." : "NO TOKEN");
        }
        localStorage.setItem('access_token', data.accessToken);
        localStorage.setItem('token_type', data.tokenType);
@@ -31,8 +31,8 @@ const Login: React.FC = () => {
        localStorage.setItem('username', data.username || '');
        localStorage.setItem('email', data.email || '');
        if (process.env.NODE_ENV === 'development') {
-         console.log("Login: Token stored in localStorage");
-         console.log("Login: Navigating to dashboard");
+        console.log("Login: Token stored in localStorage");
+        console.log("Login: Navigating to dashboard");
        }
        navigate('/dashboard');
     } catch (err: any) {

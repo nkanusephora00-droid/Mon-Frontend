@@ -128,7 +128,9 @@ const Tests: React.FC = () => {
       const response = await api.get('/test-sessions');
       setSessions(response.data);
     } catch (err) {
-      console.error('Error fetching sessions:', err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching sessions:', err);
+      }
     }
   };
 
