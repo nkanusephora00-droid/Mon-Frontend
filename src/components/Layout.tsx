@@ -10,6 +10,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const currentPath = window.location.pathname;
+
   // Vérifier le token au chargement
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -47,14 +49,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const userRole = localStorage.getItem("user_role");
   const isAdmin = userRole === "admin";
 
-  const menuItems = [
+  const mainMenuItems = [
     { path: "/dashboard", label: "Tableau de bord", icon: "fa-home" },
     { path: "/applications", label: "Applications", icon: "fa-mobile-alt" },
     { path: "/comptes", label: "Comptes", icon: "fa-user" },
     { path: "/tests", label: "Tests", icon: "fa-check-square" },
+    { path: "/todos", label: "Tâches", icon: "fa-tasks" },
+    { path: "/reports", label: "Rapports", icon: "fa-chart-bar" },
     ...(isAdmin
       ? [{ path: "/users", label: "Utilisateurs", icon: "fa-users" }]
       : []),
+    { path: "/profile", label: "Mon Profil", icon: "fa-user-circle" },
   ];
 
   const handleLogout = () => {
@@ -81,9 +86,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div style={styles.container}>
       {/* Mobile Menu Toggle */}
       <button
-        style={styles.mobileMenuToggle}
+        style={{
+          ...styles.mobileMenuToggle,
+          ...(mobileMenuOpen ? styles.mobileMenuHidden : {})
+        }}
         onClick={toggleMobileMenu}
-        aria-label="Menu"
+        aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
       >
         <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"}`}></i>
       </button>
@@ -104,15 +112,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         <nav style={styles.nav}>
-          {menuItems.map((item) => (
+          {mainMenuItems.map((item) => (
             <button
               key={item.path}
               onClick={() => handleNavClick(item.path)}
               style={{
                 ...styles.navItem,
-                ...(window.location.pathname === item.path
-                  ? styles.navItemActive
-                  : {}),
+                ...(currentPath === item.path ? styles.navItemActive : {}),
               }}
             >
               <span style={styles.navIcon}>
@@ -124,10 +130,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
 
         <div style={styles.sidebarFooter}>
-          <button onClick={handleLogout} style={styles.logoutButton}>
-            <i className="fas fa-sign-out-alt"></i> Se déconnecter
-          </button>
-        </div>
+          </div>
       </aside>
 
       {/* Mobile Overlay */}
@@ -141,20 +144,42 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Main Content */}
       <div style={styles.mainWrapper} className="main-wrapper">
-        {/* Header */}
-        <header style={styles.header}>
-          <div style={styles.headerTitle}>
-            <h1>Gestion des Accès IT</h1>
-          </div>
-          <div style={styles.headerUser}>
-            <span style={styles.userBadge}>
-              <i
-                className={`fas ${isAdmin ? "fa-user-shield" : "fa-user"}`}
-              ></i>
-              {isAdmin ? "Admin" : "Utilisateur"}
-            </span>
-          </div>
-        </header>
+       {/* Header */}
+       <header 
+         style={styles.header}
+         onClick={() => {
+           // Toggle mobile menu when clicking header on mobile
+           if (window.innerWidth <= 768) {
+             toggleMobileMenu();
+           }
+         }}
+       >
+         <div style={styles.headerTitle}>
+           <h1>Gestion des Accès IT</h1>
+         </div>
+         <div style={styles.headerActions}>
+           <button
+             onClick={() => handleNavClick('/notifications')}
+             style={styles.notifBellButton}
+             title="Notifications"
+           >
+             <i className="fas fa-bell"></i>
+           </button>
+           <button
+             onClick={handleLogout}
+             style={styles.logoutIconButton}
+             title="Se déconnecter"
+           >
+             <i className="fas fa-sign-out-alt"></i>
+           </button>
+           <span style={styles.userBadge}>
+             <i
+               className={`fas ${isAdmin ? "fa-user-shield" : "fa-user"}`}
+             ></i>
+             {isAdmin ? "Admin" : "Utilisateur"}
+           </span>
+         </div>
+       </header>
 
         {/* Content */}
         <main style={styles.content}>{children}</main>
@@ -273,10 +298,38 @@ const styles = {
     fontWeight: "600",
     color: "var(--text-primary)",
   },
-  headerUser: {
+  headerActions: {
     display: "flex",
     alignItems: "center",
     gap: "12px",
+  },
+  notifBellButton: {
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    border: "none",
+    backgroundColor: "var(--hover-bg)",
+    color: "var(--text-secondary)",
+    fontSize: "16px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "all 0.2s ease",
+  },
+  logoutIconButton: {
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    border: "none",
+    backgroundColor: "var(--danger-color)",
+    color: "white",
+    fontSize: "16px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "all 0.2s ease",
   },
   userBadge: {
     padding: "6px 14px",
@@ -291,9 +344,10 @@ const styles = {
     padding: "30px",
     overflowY: "auto" as const,
     backgroundColor: "var(--bg-primary)",
+    minHeight: "100vh",
   },
   mobileMenuToggle: {
-    display: "flex",
+    display: "none",
     position: "fixed" as const,
     top: "8px",
     left: "8px",
@@ -304,11 +358,15 @@ const styles = {
     border: "none",
     backgroundColor: "var(--bg-card)",
     color: "var(--text-primary)",
-    fontSize: "20px",
+    fontSize: "18px",
     cursor: "pointer",
     boxShadow: "0 2px 8px var(--shadow-color)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  mobileMenuHidden: {
+    opacity: 0,
+    pointerEvents: "none",
   },
   mobileOverlay: {
     display: "none",
@@ -328,106 +386,154 @@ const styles = {
 // Responsive styles via CSS
 const styleSheet = document.createElement("style");
 styleSheet.textContent = `
-  @media (max-width: 768px) {
-    /* Sidebar hidden by default on mobile */
-    aside {
-      position: fixed !important;
-      left: -280px !important;
-      width: 260px !important;
-      height: 100vh !important;
-      z-index: 1000 !important;
-      transition: left 0.3s ease !important;
-      top: 0;
-      overflow-y: auto;
-    }
-    
-    /* Sidebar shown when mobile menu is open */
-    aside.sidebar-mobile-open,
-    aside[style*="left: 0"],
-    aside.sidebar-open {
-      left: 0 !important;
-    }
-    
-    /* Main content wrapper - remove margin on mobile */
-    .main-wrapper {
-      margin-left: 0 !important;
-      width: 100% !important;
-      flex: 1;
-    }
-    
-    /* Header adjustments */
-    header {
-      padding: 0 15px 0 60px !important;
-      height: 60px !important;
-      position: sticky !important;
-    }
-    
-    header h1 {
-      font-size: 16px !important;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    /* User badge hide on small mobile */
-    .headerUser span,
-    header > div:last-child {
-      display: none !important;
-    }
-    
-    /* Main content */
-    main {
-      padding: 15px !important;
-      margin-top: 0 !important;
-      min-height: calc(100vh - 60px);
-    }
-    
-    /* Show hamburger menu button */
-    button[aria-label="Menu"] {
-      display: flex !important;
-    }
-    
-    /* Mobile overlay - always show when menu open */
-    .mobile-overlay {
-      display: block !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      background-color: rgba(0, 0, 0, 0.5) !important;
-      z-index: 999 !important;
-    }
-  }
-
-  /* Tablet specific fixes */
-  @media (min-width: 481px) and (max-width: 768px) {
-    .main-wrapper {
-      margin-left: 0 !important;
-    }
-
-    header h1 {
-      font-size: 18px !important;
-    }
+@media (max-width: 768px) {
+  /* Reset body and html for mobile scrolling */
+  html, body {
+    height: auto !important;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
   
-  /* Login page mobile */
-  @media (max-width: 480px) {
-    .login-card {
-      padding: 24px 16px !important;
-      margin: 16px !important;
-      border-radius: 12px !important;
-    }
-    
-    .login-title {
-      font-size: 24px !important;
-    }
+  /* Container takes full height */
+  .container {
+    min-height: 100vh !important;
+    height: auto !important;
+  }
+  
+  /* Sidebar hidden by default on mobile */
+  aside {
+    position: fixed !important;
+    left: -280px !important;
+    width: 260px !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+    transition: left 0.3s ease !important;
+    top: 0;
+  }
+  
+  /* Sidebar shown when mobile menu is open */
+  aside.sidebar-mobile-open,
+  aside[style*="left: 0"],
+  aside.sidebar-open {
+    left: 0 !important;
+  }
+  
+  /* Make sidebar nav scrollable */
+  aside nav {
+    overflow-y: auto !important;
+    flex: 1 !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Main wrapper settings for mobile */
+  .main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: calc(100vh - 60px) !important;
+  }
+  
+  /* Header sticky on top */
+       header {
+         padding: 0 15px 0 60px !important;
+         height: 60px !important;
+         position: sticky !important;
+         top: 0;
+         z-index: 100;
+         flex-shrink: 0;
+         cursor: pointer !important;
+       }
+  
+  header h1 {
+    font-size: 14px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Show header actions on mobile */
+  .headerActions {
+    display: flex !important;
+    gap: 8px !important;
+  }
+  
+  /* Smaller badge on mobile */
+  .userBadge {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+  
+  /* Smaller buttons on mobile */
+  .notifBellButton,
+  .logoutIconButton {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
+  }
+  
+  /* Main content - scrollable on mobile */
+  main {
+    padding: 15px !important;
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    min-height: calc(100vh - 60px) !important;
+    height: auto !important;
+  }
+  
+  /* Page container scrollable */
+  .container > div > main,
+  [class*="main"] {
+    min-height: calc(100vh - 60px) !important;
+  }
+  
+  /* Show hamburger menu button */
+  button[aria-label*="menu"] {
+    display: flex !important;
+  }
+  
+  /* Mobile overlay */
+  .mobile-overlay {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 999 !important;
+  }
+}
+
+/* Tablet specific fixes */
+@media (min-width: 481px) and (max-width: 768px) {
+  .main-wrapper {
+    margin-left: 0 !important;
   }
 
-  /* Prevent body scroll when mobile menu is open */
-  body.menu-open {
-    overflow: hidden;
+  header h1 {
+    font-size: 18px !important;
   }
+}
+
+/* Login page mobile */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px 16px !important;
+    margin: 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  .login-title {
+    font-size: 24px !important;
+  }
+}
+
+/* Prevent body scroll when mobile menu is open */
+body.menu-open {
+  overflow: hidden;
+}
 `;
 document.head.appendChild(styleSheet);
 

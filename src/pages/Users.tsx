@@ -281,8 +281,8 @@ const Users: React.FC = () => {
 };
 
 const styles = {
-  container: { backgroundColor: 'var(--bg-primary)' },
-  main: { padding: '30px', maxWidth: '1400px', margin: '0 auto' },
+  container: { backgroundColor: 'var(--bg-primary)', minHeight: '100vh' },
+  main: { padding: '30px', maxWidth: '1400px', margin: '0 auto', minHeight: 'calc(100vh - 70px)' },
   formSection: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '12px', marginBottom: '24px', boxShadow: '0 2px 8px var(--shadow-color)' },
   tableSection: { backgroundColor: 'var(--bg-card)', padding: '24px', borderRadius: '12px', boxShadow: '0 2px 8px var(--shadow-color)' },
   form: { display: 'flex', gap: '10px', flexWrap: 'wrap' as const },

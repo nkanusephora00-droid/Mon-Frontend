@@ -7,7 +7,7 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 15000,
+  timeout: 30000,
 });
 
 api.interceptors.request.use((config) => {
@@ -48,6 +48,14 @@ export const usersAPI = {
   delete: async (id: number) => (await api.delete(`/users/${id}`)).data,
 };
 
+// Profile API
+export const profileAPI = {
+  getMe: async () => (await api.get("/users/me")).data,
+  updateMe: async (data: any) => (await api.put("/users/me", data)).data,
+  changePassword: async (oldPassword: string, newPassword: string) => 
+    (await api.put("/users/me/password", { oldPassword, newPassword })).data,
+};
+
 // Applications API
 export const applicationsAPI = {
   getAll: async () => (await api.get("/applications")).data,
@@ -83,6 +91,16 @@ export const testSessionsAPI = {
   create: async (data: any) => (await api.post("/test-sessions", data)).data,
   update: async (id: number, data: any) => (await api.put(`/test-sessions/${id}`, data)).data,
   delete: async (id: number) => (await api.delete(`/test-sessions/${id}`)).data,
+};
+
+// Todos API
+export const todosAPI = {
+  getAll: async () => (await api.get("/todos")).data,
+  getById: async (id: number) => (await api.get(`/todos/${id}`)).data,
+  create: async (data: any) => (await api.post("/todos", data)).data,
+  update: async (id: number, data: any) => (await api.put(`/todos/${id}`, data)).data,
+  delete: async (id: number) => (await api.delete(`/todos/${id}`)).data,
+  toggle: async (id: number) => (await api.patch(`/todos/${id}/toggle`)).data,
 };
 
 export default api;

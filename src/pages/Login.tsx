@@ -16,14 +16,19 @@ const Login: React.FC = () => {
 
     try {
       console.log("Login: Attempting login with:", username);
-      const data = await authAPI.login(username, password);
-      console.log("Login: Login response:", data);
-      console.log("Login: Storing token:", data.accessToken ? data.accessToken.substring(0, 20) + "..." : "NO TOKEN");
-      localStorage.setItem('access_token', data.accessToken);
-      localStorage.setItem('token_type', data.tokenType);
-      console.log("Login: Token stored in localStorage");
-      console.log("Login: Navigating to dashboard");
-      navigate('/dashboard');
+       const data = await authAPI.login(username, password);
+       console.log("Login: Login response:", data);
+       console.log("Login: Storing token:", data.accessToken ? data.accessToken.substring(0, 20) + "..." : "NO TOKEN");
+       localStorage.setItem('access_token', data.accessToken);
+       localStorage.setItem('token_type', data.tokenType);
+       // Store user info for Layout component
+       localStorage.setItem('user_role', data.userRole || '');
+       localStorage.setItem('user_id', data.userId || '');
+       localStorage.setItem('username', data.username || '');
+       localStorage.setItem('email', data.email || '');
+       console.log("Login: Token stored in localStorage");
+       console.log("Login: Navigating to dashboard");
+       navigate('/dashboard');
     } catch (err: any) {
       console.error('Login: Erreur de connexion:', err);
       const errorMessage = err.response?.data?.detail || err.response?.data?.accessToken || err.message || 'Erreur de connexion';
@@ -60,6 +65,7 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
+              
               required
             />
           </div>

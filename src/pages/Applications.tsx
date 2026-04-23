@@ -289,8 +289,8 @@ const Applications: React.FC = () => {
 };
 
 const styles: any = {
-  container: { backgroundColor: 'var(--bg-primary)' },
-  main: { padding: '30px', maxWidth: '1400px', margin: '0 auto' },
+  container: { backgroundColor: 'var(--bg-primary)', minHeight: '100vh' },
+  main: { padding: '30px', maxWidth: '1400px', margin: '0 auto', minHeight: 'calc(100vh - 70px)' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' },
   pageTitle: { fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' },
   pageSubtitle: { fontSize: '14px', color: 'var(--text-secondary)' },

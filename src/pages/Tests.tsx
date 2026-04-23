@@ -142,11 +142,13 @@ const Tests: React.FC = () => {
         nom_document: sessionForm.nom_document || undefined,
         statut: sessionForm.statut
       };
-      await testSessionsAPI.create(sessionData);
+      const newSession = await testSessionsAPI.create(sessionData);
       setMessage({ type: 'success', text: 'Session créée avec succès!' });
       setShowSessionModal(false);
       setSessionForm({ nom: '', description: '', nom_document: '', applicationId: 0, statut: 'En cours' });
       fetchSessions();
+      // Automatically select the newly created session
+      setSelectedSession(newSession.id);
     } catch (err: any) {
       const detail = err.response?.data?.detail;
       let errorText = 'Erreur lors de la création';
@@ -333,7 +335,7 @@ const Tests: React.FC = () => {
   };
 
   const getSessionTests = (sessionId: number) => {
-    return tests.filter(t => t.sessionId === sessionId);
+    return tests.filter(t => t.sessionId === sessionId || t.session_id === sessionId);
   };
 
   const getStatutClass = (statut: string) => {
@@ -361,35 +363,35 @@ const Tests: React.FC = () => {
         <style>
           @page { 
             size: A4 landscape;
-            margin: 10mm; 
+            margin: 15mm; 
           }
           * { margin: 0; padding: 0; box-sizing: border-box; }
           html, body { height: auto; }
-          body { font-family: 'Segoe UI', sans-serif; padding: 20px; color: #333; }
-          .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #2c3e50; padding-bottom: 15px; page-break-after: avoid; }
-          .header h1 { font-size: 24px; color: #2c3e50; margin-bottom: 10px; }
-          .session-name { font-size: 16px; color: #7f8c8d; margin-top: 5px; font-style: italic; }
-          .session-info { display: flex; justify-content: center; gap: 30px; margin: 15px 0; flex-wrap: wrap; }
+          body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; color: #333; font-size: 14px; line-height: 1.4; }
+          .header { text-align: center; margin-bottom: 20px; border-bottom: 3px solid #2c3e50; padding-bottom: 12px; page-break-after: avoid; }
+          .header h1 { font-size: 22px; color: #2c3e50; margin-bottom: 8px; }
+          .session-name { font-size: 14px; color: #7f8c8d; margin-top: 4px; font-style: italic; }
+          .session-info { display: flex; justify-content: center; gap: 25px; margin: 12px 0; flex-wrap: wrap; }
           .info-item { text-align: center; }
-          .info-label { font-size: 10px; color: #7f8c8d; text-transform: uppercase; }
-          .info-value { font-size: 14px; font-weight: 600; color: #2c3e50; }
-          .stats { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-          .stat-box { padding: 10px 20px; border-radius: 6px; text-align: center; }
+          .info-label { font-size: 10px; color: #7f8c8d; text-transform: uppercase; font-weight: 600; }
+          .info-value { font-size: 13px; font-weight: 600; color: #2c3e50; }
+          .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; }
+          .stat-box { padding: 8px 15px; border-radius: 6px; text-align: center; }
           .stat-total { background: #3498db; color: white; }
           .stat-ok { background: #27ae60; color: white; }
           .stat-bug { background: #e74c3c; color: white; }
           .stat-en-cours { background: #f39c12; color: white; }
-          table { width: 100%; border-collapse: collapse; font-size: 10px; page-break-inside: auto; }
+          table { width: 100%; border-collapse: collapse; font-size: 14px; page-break-inside: auto; }
           thead { display: table-header-group; }
           tr { page-break-inside: avoid; page-break-after: auto; }
-          th { background: #2c3e50; color: white; padding: 8px 6px; text-align: left; }
-          td { padding: 8px 6px; border-bottom: 1px solid #ddd; vertical-align: top; }
+          th { background: #2c3e50; color: white; padding: 8px 6px; text-align: left; font-size: 12px; }
+          td { padding: 8px 6px; border-bottom: 1px solid #ddd; vertical-align: top; font-size: 11px; }
           tr:nth-child(even) { background: #f8f9fa; }
-          .statut-ok { background: #27ae60; color: white; padding: 2px 6px; border-radius: 3px; font-size: 9px; }
-          .statut-bug { background: #e74c3c; color: white; padding: 2px 6px; border-radius: 3px; font-size: 9px; }
-          .statut-en-cours { background: #f39c12; color: white; padding: 2px 6px; border-radius: 3px; font-size: 9px; }
-          .statut-bloque { background: #6c757d; color: white; padding: 2px 6px; border-radius: 3px; font-size: 9px; }
-          .footer { margin-top: 20px; text-align: center; color: #7f8c8d; font-size: 11px; border-top: 1px solid #ddd; padding-top: 10px; page-break-before: avoid; }
+          .statut-ok { background: #27ae60; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; }
+          .statut-bug { background: #e74c3c; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; }
+          .statut-en-cours { background: #f39c12; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; }
+          .statut-bloque { background: #6c757d; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; }
+          .footer { margin-top: 15px; text-align: center; color: #7f8c8d; font-size: 10px; border-top: 1px solid #ddd; padding-top: 8px; page-break-before: avoid; }
         </style>
       </head>
       <body>
@@ -950,7 +952,7 @@ const Tests: React.FC = () => {
 
 const styles: any = {
   container: { backgroundColor: 'var(--bg-primary)', minHeight: '100vh' },
-  main: { padding: '20px', maxWidth: '1400px', margin: '0 auto' },
+  main: { padding: '20px', maxWidth: '1400px', margin: '0 auto', minHeight: 'calc(100vh - 70px)' },
   pageTitle: { fontSize: '24px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' },
   pageSubtitle: { fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px', fontWeight: '400' },
   formSection: { backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: '10px', marginBottom: '16px', boxShadow: '0 2px 8px var(--shadow-color)', border: '1px solid var(--border-light)' },

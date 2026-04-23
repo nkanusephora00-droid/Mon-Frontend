@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authAPI, applicationsAPI, comptesAPI, usersAPI, testsAPI, testSessionsAPI } from '../services/api';
+import { authAPI, applicationsAPI, comptesAPI, usersAPI, testsAPI, testSessionsAPI, todosAPI } from '../services/api';
 
 interface User {
   id: number;
@@ -12,6 +12,12 @@ interface User {
 interface Test {
   id: number;
   statut: string;
+}
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
 interface Stats {
@@ -40,6 +46,7 @@ const Dashboard: React.FC = () => {
   });
   const [loading, setLoading] = useState(true);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,12 +55,15 @@ const Dashboard: React.FC = () => {
         setUser(userData);
         localStorage.setItem('user_role', userData.role);
         
-        const [apps, comptes, tests, sessions] = await Promise.all([
+        const [apps, comptes, tests, sessions, todos] = await Promise.all([
           applicationsAPI.getAll(),
           comptesAPI.getAll(),
           testsAPI.getAll(),
           testSessionsAPI.getAll(),
+          todosAPI.getAll(),
         ]);
+        
+        setTodos(todos.filter((t: Todo) => !t.completed).slice(0, 5));
         
         let usersCount = 0;
         let usersActiveCount = 0;
@@ -322,6 +332,12 @@ const Dashboard: React.FC = () => {
               </span>
               <span style={styles.actionText}>Nouveau test</span>
             </button>
+            <button style={styles.actionButton} onClick={() => navigate('/todos')}>
+              <span style={{ ...styles.actionIcon, ...styles.actionIconSuccess }}>
+                <i className="fas fa-tasks"></i>
+              </span>
+              <span style={styles.actionText}>Nouvelle tâche</span>
+            </button>
             {user?.role === 'admin' && (
               <button style={styles.actionButton} onClick={() => navigate('/users')}>
                 <span style={{ ...styles.actionIcon, ...styles.actionIconWarning }}>
@@ -332,6 +348,28 @@ const Dashboard: React.FC = () => {
             )}
           </div>
         </div>
+
+        {/* Section tâches */}
+        {todos.length > 0 && (
+          <div style={styles.tasksSection}>
+            <div style={styles.tasksHeader}>
+              <h2 style={styles.sectionTitle}>
+                <i className="fas fa-tasks" style={{ color: 'var(--success-color)' }}></i> Tâches en attente
+              </h2>
+              <button style={styles.voirToutButton} onClick={() => navigate('/todos')}>
+                Voir tout
+              </button>
+            </div>
+            <div style={styles.tasksList}>
+              {todos.map((todo) => (
+                <div key={todo.id} style={styles.taskItem}>
+                  <i className="fas fa-circle" style={styles.taskBullet}></i>
+                  <span style={styles.taskTitle}>{todo.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       <footer style={styles.footer}>
@@ -344,13 +382,14 @@ const Dashboard: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     backgroundColor: 'var(--bg-primary)',
-    minHeight: '100%',
+    minHeight: '100vh',
   },
   main: {
     padding: '30px',
     maxWidth: '1400px',
     margin: '0 auto',
     width: '100%',
+    minHeight: 'calc(100vh - 70px)',
   },
   loading: {
     display: 'flex',
@@ -643,6 +682,51 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: 'center',
     padding: '20px',
     color: '#9ca3af',
+    fontSize: '14px',
+  },
+  tasksSection: {
+    backgroundColor: 'var(--bg-card)',
+    borderRadius: '16px',
+    padding: '24px',
+    border: '1px solid var(--border-color)',
+    boxShadow: '0 4px 15px var(--shadow-color)',
+    marginBottom: '30px',
+  },
+  tasksHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '16px',
+  },
+  voirToutButton: {
+    padding: '8px 16px',
+    backgroundColor: 'var(--success-color)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: 600,
+  },
+  tasksList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+  },
+  taskItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '12px 16px',
+    backgroundColor: 'var(--bg-primary)',
+    borderRadius: '10px',
+  },
+  taskBullet: {
+    color: 'var(--success-color)',
+    fontSize: '8px',
+  },
+  taskTitle: {
+    color: 'var(--text-primary)',
     fontSize: '14px',
   },
 };
