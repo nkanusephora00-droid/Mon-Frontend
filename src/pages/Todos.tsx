@@ -37,7 +37,9 @@ const Todos: React.FC = () => {
       const data = await todosAPI.getAll();
       setTodos(data);
     } catch (err: any) {
-      console.error('Error fetching todos:', err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching todos:', err);
+      }
       setMessage({ type: 'error', text: 'Erreur lors du chargement des tâches' });
     } finally {
       setLoading(false);

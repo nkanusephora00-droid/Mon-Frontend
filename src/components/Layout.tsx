@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
+import "./Layout.css";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,23 +16,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Vérifier le token au chargement
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    console.log("Layout: Checking token on load");
-    console.log("Layout: Token in localStorage:", token ? token.substring(0, 20) + "..." : "NO TOKEN");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Layout: Checking token on load");
+      console.log("Layout: Token in localStorage:", token ? token.substring(0, 20) + "..." : "NO TOKEN");
+    }
     if (!token) {
-      console.log("Layout: No token found, redirecting to login");
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Layout: No token found, redirecting to login");
+      }
       navigate("/login");
       return;
     }
 
     // Vérifier si le token est valide
     const validateToken = async () => {
-      console.log("Layout: Validating token with /auth/me");
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Layout: Validating token with /auth/me");
+      }
       try {
         const response = await authAPI.me();
-        console.log("Layout: Token validation successful:", response);
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Layout: Token validation successful:", response);
+        }
       } catch (error: any) {
-        console.error("Layout: Token invalide:", error);
-        console.error("Layout: Token validation response:", error?.response?.status, error?.response?.data);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Layout: Token invalide:", error);
+          console.error("Layout: Token validation response:", error?.response?.status, error?.response?.data);
+        }
         localStorage.removeItem("access_token");
         localStorage.removeItem("token_type");
         localStorage.removeItem("user_role");
@@ -366,7 +377,7 @@ const styles = {
   },
   mobileMenuHidden: {
     opacity: 0,
-    pointerEvents: "none",
+    pointerEvents: "none" as const,
   },
   mobileOverlay: {
     display: "none",
@@ -382,159 +393,5 @@ const styles = {
     transform: "translateX(0)",
   },
 };
-
-// Responsive styles via CSS
-const styleSheet = document.createElement("style");
-styleSheet.textContent = `
-@media (max-width: 768px) {
-  /* Reset body and html for mobile scrolling */
-  html, body {
-    height: auto !important;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  
-  /* Container takes full height */
-  .container {
-    min-height: 100vh !important;
-    height: auto !important;
-  }
-  
-  /* Sidebar hidden by default on mobile */
-  aside {
-    position: fixed !important;
-    left: -280px !important;
-    width: 260px !important;
-    height: 100vh !important;
-    z-index: 1000 !important;
-    transition: left 0.3s ease !important;
-    top: 0;
-  }
-  
-  /* Sidebar shown when mobile menu is open */
-  aside.sidebar-mobile-open,
-  aside[style*="left: 0"],
-  aside.sidebar-open {
-    left: 0 !important;
-  }
-  
-  /* Make sidebar nav scrollable */
-  aside nav {
-    overflow-y: auto !important;
-    flex: 1 !important;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Main wrapper settings for mobile */
-  .main-wrapper {
-    margin-left: 0 !important;
-    width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: calc(100vh - 60px) !important;
-  }
-  
-  /* Header sticky on top */
-       header {
-         padding: 0 15px 0 60px !important;
-         height: 60px !important;
-         position: sticky !important;
-         top: 0;
-         z-index: 100;
-         flex-shrink: 0;
-         cursor: pointer !important;
-       }
-  
-  header h1 {
-    font-size: 14px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Show header actions on mobile */
-  .headerActions {
-    display: flex !important;
-    gap: 8px !important;
-  }
-  
-  /* Smaller badge on mobile */
-  .userBadge {
-    padding: 4px 8px !important;
-    font-size: 10px !important;
-  }
-  
-  /* Smaller buttons on mobile */
-  .notifBellButton,
-  .logoutIconButton {
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 14px !important;
-  }
-  
-  /* Main content - scrollable on mobile */
-  main {
-    padding: 15px !important;
-    flex: 1 !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    min-height: calc(100vh - 60px) !important;
-    height: auto !important;
-  }
-  
-  /* Page container scrollable */
-  .container > div > main,
-  [class*="main"] {
-    min-height: calc(100vh - 60px) !important;
-  }
-  
-  /* Show hamburger menu button */
-  button[aria-label*="menu"] {
-    display: flex !important;
-  }
-  
-  /* Mobile overlay */
-  .mobile-overlay {
-    display: block !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    z-index: 999 !important;
-  }
-}
-
-/* Tablet specific fixes */
-@media (min-width: 481px) and (max-width: 768px) {
-  .main-wrapper {
-    margin-left: 0 !important;
-  }
-
-  header h1 {
-    font-size: 18px !important;
-  }
-}
-
-/* Login page mobile */
-@media (max-width: 480px) {
-  .login-card {
-    padding: 24px 16px !important;
-    margin: 16px !important;
-    border-radius: 12px !important;
-  }
-  
-  .login-title {
-    font-size: 24px !important;
-  }
-}
-
-/* Prevent body scroll when mobile menu is open */
-body.menu-open {
-  overflow: hidden;
-}
-`;
-document.head.appendChild(styleSheet);
 
 export default Layout;

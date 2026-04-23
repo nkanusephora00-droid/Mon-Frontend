@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { usersAPI } from '../services/api';
+import { usersAPI, User } from '../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  isActive: boolean;
-}
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -41,7 +33,9 @@ const Users: React.FC = () => {
       const data = await usersAPI.getAll();
       setUsers(data);
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error(err);
+      }
       setMessage({ type: 'error', text: 'Erreur de chargement des utilisateurs' });
     } finally {
       setLoading(false);

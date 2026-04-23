@@ -35,7 +35,9 @@ const Applications: React.FC = () => {
       const data = await applicationsAPI.getAll();
       setApplications(data);
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error(err);
+      }
       setMessage({ type: 'error', text: 'Erreur de chargement des applications' });
     } finally {
       setLoading(false);

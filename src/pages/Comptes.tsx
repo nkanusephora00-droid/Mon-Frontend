@@ -50,7 +50,9 @@ const Comptes: React.FC = () => {
       setComptes(comptesData);
       setApplications(appsData);
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error(err);
+      }
       setMessage({ type: 'error', text: 'Erreur de chargement des comptes' });
     } finally {
       setLoading(false);

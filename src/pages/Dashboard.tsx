@@ -72,7 +72,9 @@ const Dashboard: React.FC = () => {
           usersCount = users.length;
           usersActiveCount = users.filter((u: any) => u.isActive).length;
         } catch (e) {
-          console.log('Users list not accessible');
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Users list not accessible');
+          }
         }
         
         // Calculer les statistiques des tests
@@ -90,8 +92,10 @@ const Dashboard: React.FC = () => {
           sessions: sessions.length,
         });
       } catch (err: any) {
-        console.error('Dashboard auth error:', err);
-        console.error('Dashboard auth response:', err?.response?.status, err?.response?.data);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Dashboard auth error:', err);
+          console.error('Dashboard auth response:', err?.response?.status, err?.response?.data);
+        }
         navigate('/login');
       } finally {
         setLoading(false);

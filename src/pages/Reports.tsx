@@ -67,7 +67,9 @@ const Reports: React.FC = () => {
         completedTodos
       });
     } catch (err) {
-      console.error('Error fetching stats:', err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching stats:', err);
+      }
     } finally {
       setLoading(false);
     }

@@ -118,7 +118,7 @@ const Tests: React.FC = () => {
       setApplications(appsData);
       await fetchSessions();
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV === 'development') { console.error(err); }
       setMessage({ type: 'error', text: 'Erreur de chargement' });
     }
   }
